@@ -1,0 +1,94 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+class Inode:
+    def __init__(self, name, is_dir=False):
+        self.name = name
+        self.is_dir = is_dir
+        self.contents = {}
+        self.permissions = {'user': 'rwx', 'group': 'r-x', 'others': 'r--'}
+
+class FileSystemGUI:
+    def __init__(self, root):
+        self.fs = Inode('/')
+        self.current_dir = self.fs
+
+        self.root = root
+        self.root.title("File System GUI")
+
+        self.label = tk.Label(root, text="File System GUI", font=("Helvetica", 16))
+        self.label.pack(pady=10)
+
+        self.create_button = tk.Button(root, text="Create", command=self.create)
+        self.create_button.pack(pady=5)
+
+        self.delete_button = tk.Button(root, text="Delete", command=self.delete)
+        self.delete_button.pack(pady=5)
+
+        self.list_button = tk.Button(root, text="List", command=self.list)
+        self.list_button.pack(pady=5)
+
+        self.change_dir_button = tk.Button(root, text="Change Dir", command=self.change_dir)
+        self.change_dir_button.pack(pady=5)
+
+        self.read_button = tk.Button(root, text="Read", command=self.read)
+        self.read_button.pack(pady=5)
+
+        self.write_button = tk.Button(root, text="Write", command=self.write)
+        self.write_button.pack(pady=5)
+
+        self.text_area = tk.Text(root, width=40, height=10, wrap=tk.WORD)
+        self.text_area.pack(pady=10)
+
+    def create(self):
+        name = simpledialog.askstring("Create", "Enter name:")
+        if name is not None:
+            is_dir = messagebox.askyesno("Create", "Is it a directory?")
+            new_inode = Inode(name, is_dir)
+            self.current_dir.contents[name] = new_inode
+            messagebox.showinfo("Result", f"{'Directory' if is_dir else 'File'} '{name}' created.")
+
+    def delete(self):
+        name = simpledialog.askstring("Delete", "Enter name:")
+        if name in self.current_dir.contents:
+            del self.current_dir.contents[name]
+            messagebox.showinfo("Result", f"Deleted '{name}'.")
+        else:
+            messagebox.showerror("Error", f"'{name}' not found.")
+
+    def list(self):
+        contents = ', '.join(self.current_dir.contents.keys())
+        self.text_area.delete('1.0', tk.END)
+        self.text_area.insert(tk.END, contents)
+
+    def change_dir(self):
+        name = simpledialog.askstring("Change Dir", "Enter directory name:")
+        if name in self.current_dir.contents and self.current_dir.contents[name].is_dir:
+            self.current_dir = self.current_dir.contents[name]
+            messagebox.showinfo("Result", f"Changed directory to '{name}'.")
+        else:
+            messagebox.showerror("Error", f"'{name}' is not a valid directory.")
+
+    def read(self):
+        name = simpledialog.askstring("Read", "Enter name:")
+        if name in self.current_dir.contents:
+            contents = self.current_dir.contents[name].contents
+            self.text_area.delete('1.0', tk.END)
+            self.text_area.insert(tk.END, contents)
+        else:
+            messagebox.showerror("Error", f"'{name}' not found.")
+
+    def write(self):
+        name = simpledialog.askstring("Write", "Enter name:")
+        if name in self.current_dir.contents:
+            content = simpledialog.askstring("Write", f"Enter content for '{name}':")
+            if content is not None:
+                self.current_dir.contents[name].contents = content
+                messagebox.showinfo("Result", f"Content written to '{name}'.")
+        else:
+            messagebox.showerror("Error", f"'{name}' not found.")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = FileSystemGUI(root)
+    root.mainloop()
