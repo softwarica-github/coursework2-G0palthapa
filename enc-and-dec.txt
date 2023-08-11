@@ -40,7 +40,7 @@ def decrypt_message(encoded_message):
 def encrypt():
     password = code.get()
 
-    if password == "kiran":
+    if password == "gopal":
         screen1 = Toplevel(screen)
         screen1.title("ENCRYPTION")
         screen1.geometry("400x200")
@@ -61,13 +61,13 @@ def encrypt():
     elif password == "":
         messagebox.showerror("encryption", "Input Password")
 
-    elif password != "kiran":
+    elif password != "gopal":
         messagebox.showerror("encryption", "Invalid Password")
 
 def decrypt():
     password = code.get()
 
-    if password == "kiran":
+    if password == "gopal":
         screen2 = Toplevel(screen)
         screen2.title("DECRYPTION")
         screen2.geometry("400x200")
@@ -85,7 +85,7 @@ def decrypt():
     elif password == "":
         messagebox.showerror("encryption", "Input Password")
 
-    elif password != "kiran":
+    elif password != "gopal":
         messagebox.showerror("encryption", "Invalid Password")
 
 def main_screen():
@@ -95,7 +95,7 @@ def main_screen():
 
     screen = Tk()
     screen.geometry("375x398")
-    screen.title("Welcome to Kiran page")
+    screen.title("Welcome to gopal page")
 
     def reset():
         code.set("")
